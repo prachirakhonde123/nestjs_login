@@ -12,7 +12,7 @@ export class AuthService {
            throw new NotAcceptableException("User Not Found")
         }
 
-        console.log('validate user is...',user)
+        console.log('step 2 :////////////validate user is...',user)
         
         const matchPassword = await bcrypt.compare(password,user.password);
         if(user && matchPassword){

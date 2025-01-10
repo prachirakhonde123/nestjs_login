@@ -4,7 +4,7 @@ import { PassportSerializer } from '@nestjs/passport';
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
     serializeUser(user: any, done: Function) {
-        console.log('Serializing user:', user);
+        console.log('Serializing user:................', user);
         done(null, user);
     }
 
