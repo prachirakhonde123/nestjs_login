@@ -1,20 +1,21 @@
-import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UserModule } from '../user/user.module';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
-import { SessionSerializer } from './session.serializer';
-
+import { Module, forwardRef } from "@nestjs/common";
+import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
+import { JwtStrategy } from "./jwt.strategy";
+import { AuthService } from "./auth.service";
+import { UserModule } from "src/user/user.module";
 
 @Module({
-  imports : [UserModule,PassportModule.register({ session: true })],
-  providers: [AuthService,LocalStrategy,SessionSerializer]
+  imports : [
+    PassportModule,
+    JwtModule.register({
+      secret : 'secretekey123',
+      signOptions : {expiresIn : '1h'}
+    }),
+    forwardRef(() => UserModule),
+  ],
+  providers : [AuthService,JwtStrategy],
+  exports : [JwtModule]
 })
-export class AuthModule {}
 
-/*
-Why Include the SessionSerializer in AuthModule?
-The SessionSerializer is responsible for serializing and deserializing user data 
-for sessions when using Passport.js with sessions. It must be registered as a 
-provider in the module handling authentication (in this case, AuthModule).
-*/
+export class AuthModule{}

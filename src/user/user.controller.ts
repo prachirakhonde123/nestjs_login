@@ -1,8 +1,9 @@
-import { Controller, Post, Body, UseGuards, Get,Req,Res } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get,Req,Res, Param,Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcryptjs';
 import { LocalAuthGuard } from 'src/auth/local.auth.guard';
-import { Request,Response } from 'express';
+import { Response } from 'express';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 
 @Controller('user')
@@ -49,19 +50,6 @@ export class UserController {
         }
     }
 
-    @UseGuards(LocalAuthGuard)
-    @Post('login')
-    async userLogin(@Req() req): Promise<any> {
-        console.log('req user is...',req.user)
-        const user = req.user; 
-        console.log('logged user is...',user)
-        return {
-            status: true,
-            message: 'User Logged In Successfully1243435',
-            user: user, 
-        };
-    }
-
     @Get('logout')
     async logout(@Req() req, @Res() res: Response) {
         req.logout(() => {
@@ -69,17 +57,21 @@ export class UserController {
         });
     }
 
-    @Get('session')
-    async getSession(@Req() req : Request): Promise<any> {
-        console.log('inside session...');
-        console.log('session user is 121321...',req.user)
+    @Get('id')
+    async GetUser(@Param('id') id : string){
+        const user = await this.userService.findById(id);
+        if(!user){
+            return {
+                status : false,
+                message : "User Not Found"
+            }
+        }
+        return user
+    }
 
-        // if (req.isAuthenticated()) {
-        //     console.log('User is authenticated:', req.user);
-        //     return { status: true, user: req.user };
-        // } else {
-        //     console.log('User is not authenticated');
-        //     return { status: false, message: 'Not authenticated' };
-        // }
+    @UseGuards(JwtAuthGuard)
+    @Get('profile/user')
+    async getProfile(@Request() req){
+        return req.user;
     }
 }

@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { LoggedUser } from './user.schema';
+import * as bcrypt from 'bcryptjs';
+
 
 @Injectable()
 export class UserService {
@@ -11,6 +13,8 @@ export class UserService {
     constructor(
         @InjectModel('LoggedUser') private readonly loggedUserModel: Model<LoggedUser> // Use Model<User> instead of Model<UserModule>
     ) {}
+
+    private readonly saltRounds = 10;
     
     async registerUser(userData: Record<string, any>): Promise<{ status: boolean; message?: string; data?: Record<string, any>; error?: string }> {
         try {
@@ -24,6 +28,9 @@ export class UserService {
                     message : "Username is already used."
                 }
             }
+
+            const hashedPassword = await bcrypt.hash(userData.password, this.saltRounds);
+            userData.password = hashedPassword;
             const newUser = await this.loggedUserModel.create(userData);
             console.log('newUser is......',newUser)
 
@@ -41,17 +48,15 @@ export class UserService {
         }
     };
 
-    async getUser(userName:string):Promise<any>{
-        try{
-           const findUser = await this.loggedUserModel.findOne({userName : userName});
-           console.log('step 1 : //////getUser is...',findUser)
-           return findUser
-        }
-        catch(error){
-           return {
-             status : false,
-             message : error.message
-           }
-        }
+    async findByEmail(email:string):Promise<any>{
+        return await this.loggedUserModel.findOne({email})
+    }
+
+    async findByUsername(userName:string):Promise<LoggedUser | null>{
+        return this.loggedUserModel.findOne({userName}).exec();
+    }
+
+    async findById(id:string):Promise<any>{
+        return await this.loggedUserModel.findById(id)
     }
 }
