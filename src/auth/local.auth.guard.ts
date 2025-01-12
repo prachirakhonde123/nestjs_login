@@ -8,10 +8,6 @@ export class LocalAuthGuard extends AuthGuard('local'){
         // console.log('Request body:', req.body);
         console.log('Handling request in LocalAuthGuard', { err, user, info });
 
-        if(user){
-            console.log('auth user is...',user)
-        }
-
         if (err || !user) {
             throw err || new UnauthorizedException(info?.message || 'Unauthorized');
         }

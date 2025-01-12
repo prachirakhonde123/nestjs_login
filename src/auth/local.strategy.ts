@@ -3,6 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { AuthService } from "./auth.service";
 import { Strategy } from "passport-local";
 import { Response,Request } from "express";
+import {ExtractJwt} from 'passport-jwt'
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy){
@@ -21,7 +22,8 @@ export class LocalStrategy extends PassportStrategy(Strategy){
             if(!user){
                 throw new UnauthorizedException("Unauthorised User");
             }
-            console.log('validation successful')
+            console.log('validation successful',user)
+
             return user;
         
         }
