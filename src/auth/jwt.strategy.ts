@@ -11,9 +11,4 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: 'thisissecretekey', // Replace with your actual secret
     });
   }
-
-  async validate(payload: any) {
-    console.log('wertyui')
-    return { id: payload.id, username: payload.userName };
-  }
 }

@@ -19,7 +19,7 @@ export class AuthService {
             }
         }
 
-        console.log('step 2 :////////////validate user is...',user)
+        // console.log('step 2 :////////////validate user is...',user)
         
         const matchPassword = await bcrypt.compare(password,user.password);
         if(user && matchPassword){
@@ -36,9 +36,8 @@ export class AuthService {
     }
 
     async login(user : any){
-        // console.log('logini2345678',user)
         const payload = {username : user.userName, id : user.userId}
-        // console.log('Payload to sign:', payload);
+        console.log('Payload to sign:', payload);
         let token = this.jwtService.sign(payload,{secret:"thisissecretekey"})
         return {
             status : true,

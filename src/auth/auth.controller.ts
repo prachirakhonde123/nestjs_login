@@ -8,26 +8,19 @@ export class AuthController {
     constructor (private readonly authService : AuthService) {}
 
     @Post('login')
-    // @UseGuards(JwtAuthGuard)
     async login(@Body() user : {userName : string, password : string}){
-        console.log('user is....1',user.userName)
         let getUser = await this.authService.ValidateUser(user.userName, user.password);
-        console.log('getUser iss....',getUser)
         if(getUser.status === false){
             return {
                 status : false,
                 error : getUser.message
             }
         }
-        // if(getUser){
-            const loginResponse = await this.authService.login(getUser);
-            return loginResponse;
-            // this.authService.login;
-        // }
+        const loginResponse = await this.authService.login(getUser);
+        return loginResponse;
     }
 
     @Post('logout')
-    @UseGuards(JwtAuthGuard)
     logout(@Req() req: any) {
      console.log('req user is...',req.user)
       req.user = null; 
