@@ -14,7 +14,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      secret: 'your-secret-key', // Replace with your secret
+      secret: 'thisissecretekey', // Replace with your secret
       resave: false,
       saveUninitialized: false,
       cookie: {

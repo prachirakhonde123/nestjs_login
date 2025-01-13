@@ -1,7 +1,6 @@
 import { Controller, Post, Body, UseGuards, Get,Req,Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcryptjs';
-import { LocalAuthGuard } from 'src/auth/local.auth.guard';
 import { Request,Response } from 'express';
 
 
@@ -49,37 +48,5 @@ export class UserController {
         }
     }
 
-    @UseGuards(LocalAuthGuard)
-    @Post('login')
-    async userLogin(@Req() req): Promise<any> {
-        console.log('req user is...',req.user)
-        const user = req.user; 
-        console.log('logged user is...',user)
-        return {
-            status: true,
-            message: 'User Logged In Successfully1243435',
-            user: user, 
-        };
-    }
-
-    @Get('logout')
-    async logout(@Req() req, @Res() res: Response) {
-        req.logout(() => {
-            return res.send({ status: true, message: 'Logged out successfully' });
-        });
-    }
-
-    @Get('session')
-    async getSession(@Req() req : Request): Promise<any> {
-        console.log('inside session...');
-        console.log('session user is 121321...',req.user)
-
-        // if (req.isAuthenticated()) {
-        //     console.log('User is authenticated:', req.user);
-        //     return { status: true, user: req.user };
-        // } else {
-        //     console.log('User is not authenticated');
-        //     return { status: false, message: 'Not authenticated' };
-        // }
-    }
+    
 }

@@ -43,6 +43,7 @@ export class UserService {
 
     async getUser(userName:string):Promise<any>{
         try{
+           console.log('userName is..',userName)
            const findUser = await this.loggedUserModel.findOne({userName : userName});
            console.log('step 1 : //////getUser is...',findUser)
            return findUser
