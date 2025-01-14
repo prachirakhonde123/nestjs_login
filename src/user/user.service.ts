@@ -45,7 +45,7 @@ export class UserService {
         try{
            console.log('userName is..',userName)
            const findUser = await this.loggedUserModel.findOne({userName : userName});
-           console.log('step 1 : //////getUser is...',findUser)
+        //    console.log('step 1 : //////getUser is...',findUser)
            return findUser
         }
         catch(error){

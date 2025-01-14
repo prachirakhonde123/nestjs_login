@@ -12,14 +12,13 @@ export class AuthService {
 
     async ValidateUser(userName:string,password:string):Promise<any>{
         const user = await this.userService.getUser(userName);
+        // console.log('user is..',user)
         if(user === null){
             return {
                 status : false,
-                error : "User Not Found with this username"
+                message : "User Not Found with this username"
             }
         }
-
-        // console.log('step 2 :////////////validate user is...',user)
         
         const matchPassword = await bcrypt.compare(password,user.password);
         if(user && matchPassword){
