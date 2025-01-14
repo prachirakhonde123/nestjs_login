@@ -10,7 +10,6 @@ export class AuthController {
     @Post('login')
     async login(@Body() user : {userName : string, password : string}){
         let getUser = await this.authService.ValidateUser(user.userName, user.password);
-        // console.log('get user is..',getUser)
         if(getUser.status === false){
             return {
                 status : false,

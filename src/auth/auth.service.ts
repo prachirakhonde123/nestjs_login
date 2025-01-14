@@ -24,7 +24,10 @@ export class AuthService {
         if(user && matchPassword){
             return {
                 userId : user.id,
-                userName : user.userName
+                userName : user.userName,
+                firstName : user.firstName,
+                lastName : user.lastName,
+                email : user.email
             }
         }else{
             return {
@@ -35,7 +38,7 @@ export class AuthService {
     }
 
     async login(user : any){
-        const payload = {username : user.userName, id : user.userId}
+        const payload = {username : user.userName, id : user.userId,firstName : user.firstName, lastName : user.lastName, email : user.email}
         console.log('Payload to sign:', payload);
         let token = this.jwtService.sign(payload,{secret:"thisissecretekey"})
         return {

@@ -18,6 +18,7 @@ export class UserService {
             userData._id = userId
 
             let findDuplicateUser = await this.loggedUserModel.findOne({userName : userData.userName})
+            console.log('finddupliacet ',findDuplicateUser)
             if(findDuplicateUser){
                 return{
                     status : false,
@@ -32,6 +33,7 @@ export class UserService {
                 message: 'User Registered successfully',
                 data: newUser // Return the newly created user
             };
+            
         } catch (err) {
             return {
                 status: false,

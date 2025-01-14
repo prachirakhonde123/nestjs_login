@@ -24,7 +24,7 @@ export class UserController {
             if (!password || password.length < 8) {
                 return {
                     status: false,
-                    message: 'Password must be at least 8 characters long'
+                    message: 'Password must be atleast 8 characters long'
                 };
             }
 
@@ -37,8 +37,10 @@ export class UserController {
 
             const hashedPassword = await bcrypt.hash(password, this.saltRounds);
             userData.password = hashedPassword;
-            // console.log('user1234567........',userData)
-            return await this.userService.registerUser(userData);
+            
+            let user = await this.userService.registerUser(userData);
+            return user
+
 
         } catch (error) {
             return {
