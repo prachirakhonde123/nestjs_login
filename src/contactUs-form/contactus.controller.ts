@@ -11,6 +11,27 @@ export class ContactUsFormController {
     async addForm(@Body() formdata : Record<string,any>){
         try{
             let {name,email,phone,message} = formdata
+            if(!name || name.length === 0){
+                return {
+                     status : false,
+                     message : "Name is required"
+                }
+            }
+
+            if(!email || email.length===0){
+                return {
+                    status : false,
+                    message : "Email is required"
+               }
+            }
+
+            if(!phone || phone.length===0){
+                return {
+                    status : false,
+                    message : "Phone Number is required"
+               }
+            }
+
             let form_data = {
                 name : name,
                 email : email,
