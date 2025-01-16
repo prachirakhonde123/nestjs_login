@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 
-// Define the User interface with correct types
 export interface LoggedUser extends mongoose.Document {
     _id : String,
     firstName : String,
@@ -12,7 +11,6 @@ export interface LoggedUser extends mongoose.Document {
     updated_at: Date;
 }
 
-// Define the schema structure for the User model
 const LoggedUserSchema = new mongoose.Schema({
     _id: { type: String },
     firstName : {type : String},
@@ -35,5 +33,5 @@ const LoggedUserSchema = new mongoose.Schema({
     updated_at: { type: Date, default: Date.now }
 });
 
-// Create and export the model
+
 export const LoggedUserModel = mongoose.model<LoggedUser>('LoggedUser', LoggedUserSchema);
