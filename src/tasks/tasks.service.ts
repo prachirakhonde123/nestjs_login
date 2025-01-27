@@ -1,18 +1,16 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { TaskStatus } from "./tasks-status.enum";
-// import {v4 as uuid} from 'uuid'
 import { CreateTaskDto } from "./dto/create-tasks.dto";
 import { TaskFilterDto } from "./dto/get-tasks-filterDto";
-import { TasksRepository } from "./tasks.repository";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Tasks } from "./tasks.entity";
-import { log } from "console";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class TasksService {
     constructor(
-        @InjectRepository(TasksRepository)
-        private taskRepository : TasksRepository,
+       @InjectRepository(Tasks) // Use @InjectRepository with the User entity instead of UserRepository
+        private taskRepository: Repository<Tasks>,
     ){}
 
     async getTaskById(id:string): Promise<Tasks>{
@@ -26,8 +24,17 @@ export class TasksService {
 
     }
 
-    createTask(createTaskDto : CreateTaskDto): Promise<Tasks>{
-        return this.taskRepository.createTask(createTaskDto);
+    async createTask(createTaskDto : CreateTaskDto): Promise<Tasks>{
+        const {title,description} = createTaskDto;
+
+        const create_task = this.taskRepository.create({
+            title,
+            description,
+            status : TaskStatus.DONE
+        })
+
+        await this.taskRepository.save(create_task)
+        return create_task
     }
 
     async deleteTaskById(id:string) : Promise<void>{
@@ -45,8 +52,24 @@ export class TasksService {
         return task;
     }
 
-    getAllTasks(filterDto : TaskFilterDto) : Promise<Tasks[]> {
-        return this.taskRepository.getTasks(filterDto);
+    async getAllTasks(filterDto : TaskFilterDto) : Promise<Tasks[]> {
+        const {status,search} = filterDto;
+
+        const query = this.taskRepository.createQueryBuilder('tasks')
+
+        if(status){
+            query.andWhere('tasks.status = :status', {status})
+        }
+
+        if(search){
+           query.andWhere(
+            'LOWER(tasks.title) LIKE LOWER(:search) OR LOWER(tasks.description) LIKE LOWER(:search)',  // LIKE means partial match , just like regex in mongo
+            { search : `%${search}%` }
+           )
+        }
+
+        const task = await query.getMany();
+        return task;
     }
 
 
