@@ -5,6 +5,7 @@ import { TaskFilterDto } from "./dto/get-tasks-filterDto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Tasks } from "./tasks.entity";
 import { Repository } from "typeorm";
+import { User } from "src/auth/user.entity";
 
 @Injectable()
 export class TasksService {
@@ -24,13 +25,14 @@ export class TasksService {
 
     }
 
-    async createTask(createTaskDto : CreateTaskDto): Promise<Tasks>{
+    async createTask(createTaskDto : CreateTaskDto, user:User): Promise<Tasks>{
         const {title,description} = createTaskDto;
 
         const create_task = this.taskRepository.create({
             title,
             description,
-            status : TaskStatus.DONE
+            status : TaskStatus.OPEN,
+            user
         })
 
         await this.taskRepository.save(create_task)
@@ -52,10 +54,11 @@ export class TasksService {
         return task;
     }
 
-    async getAllTasks(filterDto : TaskFilterDto) : Promise<Tasks[]> {
+    async getAllTasks(filterDto : TaskFilterDto, user : User) : Promise<Tasks[]> {
         const {status,search} = filterDto;
 
         const query = this.taskRepository.createQueryBuilder('tasks')
+        query.where({user}) // as the task entity has user property so we can find it using this
 
         if(status){
             query.andWhere('tasks.status = :status', {status})
@@ -63,7 +66,8 @@ export class TasksService {
 
         if(search){
            query.andWhere(
-            'LOWER(tasks.title) LIKE LOWER(:search) OR LOWER(tasks.description) LIKE LOWER(:search)',  // LIKE means partial match , just like regex in mongo
+            '(LOWER(tasks.title) LIKE LOWER(:search) OR LOWER(tasks.description) LIKE LOWER(:search))',  // LIKE means partial match , just like regex in mongo
+            // If we will not wrap above query in brackets we will get bug, that while passing both status and saerch query, we will got task of all users and authentication failed here
             { search : `%${search}%` }
            )
         }
@@ -135,3 +139,10 @@ export class TasksService {
     // }
 
 }
+
+
+/*
+In create task function, while creating task, we are getting user object having info of username
+password , id etc which is bad according to security issue. To avoid aur hide such sensitive info
+we use exclude decorate or package in task entity. Got to Task entity for reference
+*/

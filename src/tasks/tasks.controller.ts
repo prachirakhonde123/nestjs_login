@@ -1,18 +1,25 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, Query } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UseGuards } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
 import { TaskStatus } from "./tasks-status.enum";
 import { CreateTaskDto } from "./dto/create-tasks.dto";
 import { TaskFilterDto } from "./dto/get-tasks-filterDto";
 import { UpdateTaskStatusDto } from "./dto/update-task-status.dto";
 import { Tasks } from "./tasks.entity";
+import { AuthGuard } from "@nestjs/passport";
+import { User } from "src/auth/user.entity";
+import { GetUser } from "src/auth/get-user.decorator";
 
 @Controller('tasks')
+@UseGuards(AuthGuard())  // making all routes protected
+// Here we need token while createing,updating,deleteing and gettiing the tasks. 
+// If there is no token, then we will get error , Unauthorised with 401 status code
 export class TaskController {
     constructor(private tasksService : TasksService){}
 
+    // To get the task created by that user, we need to call @getUser decorator as it contain user info
     @Get()
-    getTasks(@Query() filterDto : TaskFilterDto) : Promise<Tasks[]> {
-        return this.tasksService.getAllTasks(filterDto)
+    getTasks(@Query() filterDto : TaskFilterDto, @GetUser() user : User ) : Promise<Tasks[]> {
+        return this.tasksService.getAllTasks(filterDto, user)
        
     }
 
@@ -22,8 +29,11 @@ export class TaskController {
     }
 
     @Post()
-    createTask(@Body() createTaskDto : CreateTaskDto) : Promise<Tasks>{
-        return this.tasksService.createTask(createTaskDto)    
+    createTask(
+        @Body() createTaskDto : CreateTaskDto,
+        @GetUser() user : User // in getUser Decorater we are getting user info
+    ) : Promise<Tasks>{
+        return this.tasksService.createTask(createTaskDto,user)    
     }
 
     @Delete('/:id')

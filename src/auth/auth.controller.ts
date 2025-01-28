@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthCredentialsDto } from "./dto/auth-credentials.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller('auth')
 export class AuthController{
@@ -14,8 +15,18 @@ export class AuthController{
     }
 
     @Post('/signin')
-    signIn(@Body() authCredentialsDto : AuthCredentialsDto):Promise<string>{
+    signIn(@Body() authCredentialsDto : AuthCredentialsDto):Promise<{accessToken : string}>{
         return this.authService.signIn(authCredentialsDto)
     }
 
+    // @Post('/test')
+    // @UseGuards(AuthGuard())  // By using this we are protecting our route /test. Without passing jwt token, it will throw error
+    // test(@Req() req){
+    //    console.log(req)
+    // }
+
 }
+
+/*
+To make the route protected need to use UseGuard
+*/
