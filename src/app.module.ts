@@ -4,14 +4,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { Tasks } from './tasks/tasks.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { configValidationSchema } from './config.schema';
 
-console.log('Environment Stage:', process.env.STAGE); 
+// console.log('Environment Stage:', process.env.STAGE); 
 
 @Module({
   imports:[
     ConfigModule.forRoot({
       envFilePath : [`.env.stage.${process.env.STAGE}`],
-      isGlobal: true,
+      validationSchema : configValidationSchema, // This will throw error if any variable present in validationschema is missing in env file. Comment any variable from env to check error
+      // isGlobal: true,
     }),
     TaskModule,
     TypeOrmModule.forRootAsync({
