@@ -8,6 +8,7 @@ import { Tasks } from "./tasks.entity";
 import { AuthGuard } from "@nestjs/passport";
 import { User } from "src/auth/user.entity";
 import { GetUser } from "src/auth/get-user.decorator";
+// import { ConfigService } from "@nestjs/config";
 
 @Controller('tasks')
 @UseGuards(AuthGuard())  // making all routes protected
@@ -17,7 +18,12 @@ import { GetUser } from "src/auth/get-user.decorator";
 
 export class TaskController {
     private logger = new Logger()
-    constructor(private tasksService : TasksService){}
+    constructor(
+        private tasksService : TasksService,
+        // private configService : ConfigService
+    ){
+        // console.log(configService.get('TEST_VALUE'))
+    }
     
     // To get the task created by that user, we need to call @getUser decorator as it contain user info
     @Get()
