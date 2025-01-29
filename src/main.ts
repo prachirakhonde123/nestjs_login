@@ -11,7 +11,7 @@ async function bootstrap() {
   
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  let port = 5000;
+  let port = process.env.PORT;
   await app.listen(process.env.PORT ?? port);
   // console.log(`Application is running on: http://localhost:5000`);
   logger.log(`Application is running on port : ${port}`)
