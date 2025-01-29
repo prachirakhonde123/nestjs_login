@@ -1,4 +1,4 @@
-Deployment using Heroku
+Deployment using Heroku (Backend)
 
 1. signup.heroku.com/login -- website
 2. After registering on email and after loging successfully, we get 2 options 
@@ -32,3 +32,19 @@ database status which will be available and under settings tab we will get crede
 22. Check logs using command -- heroku logs --tail
 23. Now go to heroku dashboard , and click on 'Open app' and run the apis with the prod url in postman
 
+
+Deployment using Heroku (Frontend)
+
+1. Deploy using git
+2. Go to git page where you have your project repo
+3. Fork the repo
+4. Go to settings--> secrets--> new repository secret 
+   Add name and value -- 1. REACT_APP_BASE_URL-- add prod url address (remove / preent at end of url)
+                         2. PUBLIC_URL -- https://<yourusernameofgithub>.github.io/nameofrepo
+5. Now start the pipeline
+6. Go to actions --> enable the workflow
+7. Click on deploy --> Run workflow --> select branch --> Run workflow
+8. Now after deploying , go to settings --> Pages
+9. Under Source --> Select gh-pages (If successfully deployed all deployment code will under gh-pages) and save . It will take 
+few minutes so wait until a message in green color will be displayed
+10. You can see deploy.yml file in frontend code 
